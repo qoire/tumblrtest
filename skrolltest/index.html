@@ -11,13 +11,6 @@
             margin-bottom: 0px;
             background-image: url('res/background_pattern.png');
         }
-        #posts .blk {
-            position: relative;
-            width: 300px;
-            height: 600px;
-            background-color: black;
-            margin-top: 5px;
-        }
 
         #cover {
             background-image: url('res/background_pattern.png');
@@ -35,7 +28,7 @@
             display: inline;
         }
 
-        #oslogo img {
+        #menubar .oslogo img {
             position: absolute;
             left: 0;
             -webkit-transition: opacity 0.1s ease-in-out;
@@ -44,15 +37,10 @@
             transition: opacity 0.1s ease-in-out;
         }
 
-        #oslogo img.top:hover {
+        #menubar .oslogo img.top:hover {
             opacity:0;
         }
 
-        #walkingman img{
-            position: absolute;
-            bottom: 25px;
-            left: 0px;
-        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/skrollr/0.6.30/skrollr.min.js"></script>
     <script src="../scripts/jquery-2.1.4.min.js"></script>
@@ -69,6 +57,7 @@
             this.oldY = 0;
             this.maxVelocity = 50;
             this._sc = 152;
+            this.mouseCT = 0;
             this.img_src = imgsrc;
 
             this.$outerDiv = $('<div></div>')
@@ -136,24 +125,19 @@
             });
 
             var mit = 0;
-            var staytime = 0;
 
             // inner function
-            function _a (_ctx, _mit, _staytime) {
+            function _a (_ctx) {
                 var _t = _ctx;
-                var mit = _mit;
-                var staytime = _staytime;
-                // calculate velocity based on mouseY
-
 
                 if (Math.abs(_t._x - _t.mouseX) <= 20) {
                     _t.$walkboy.attr({
                         src: _t.img_src.stand
                     });
 
-                    staytime += 1000;
-                    console.log(staytime);
-                    if (staytime >= 3000) {
+                    _t.mouseCT += 1000;
+                    console.log(_t.mouseCT);
+                    if (_t.mouseCT >= 3000) {
                         var _src = _t.$walkboy.attr("src");
                         if (_src == _t.img_src.sit) {
                             // do nothing
@@ -164,9 +148,13 @@
                         }
                     }
 
+                    if (_t.mouseCT > 5000) {
+                        _t.mouseCT = 5000;
+                    }
+
                 } else {
-                    staytime = 0;
-                    console.log(staytime);
+                    _t.mouseCT = 0;
+                    console.log(_t.mouseCT);
                     if (Math.abs(_t._x - _t.mouseX)/(_t.maxVelocity/1000.0) >= _t.maxVelocity) {
                         if ((_t.mouseX - _t._x) < 0.0) {
                             _t._x += (-1.0) * _t.maxVelocity * 0.5;
@@ -204,7 +192,7 @@
 
             // execute inner function as callback curry
             setInterval(function() {
-                _a(_t, mit, staytime);
+                _a(_t);
             }, 1000);
         };
 
@@ -215,10 +203,10 @@
 
             // initiate walking boy
             var $boystock = {
-                stand: 'res/bottombarguy_stand_resized.gif',
-                walk: 'res/bottombarguy_stand_walk_resized.gif',
-                walk_flipped: 'res/bottombarguy_stand_walk_resized_flipped.gif',
-                sit: 'res/bottombarguy_stand_sit_resized.gif',
+                stand: 'http://49.media.tumblr.com/6a51017177d46114fdd44b537269b148/tumblr_nz8350lS0K1r1rb5io4_100.gif',
+                walk: 'http://45.media.tumblr.com/d92da74606230e30463fa1c17801391b/tumblr_nz8350lS0K1r1rb5io2_100.gif',
+                walk_flipped: 'http://49.media.tumblr.com/bde2be279e304359ac9dbe131cf96b32/tumblr_nz8350lS0K1r1rb5io3_100.gif',
+                sit: 'http://45.media.tumblr.com/15586dc556245498111efeea70d7f77b/tumblr_nz8350lS0K1r1rb5io1_100.gif',
                 cursor_senpai: 'res/cursor_senpai.png'
             };
 
@@ -231,42 +219,34 @@
 <body>
     <div id="cover" style="width: 100%; height: 100%; background-color: #FFFFFF">
         <div id="posts">
-            <div id="head" style="height: 100px; background-color: mediumvioletred">
+
+            <div id="head" style="height: 100px; background-color: mediumvioletred; ">
             </div>
-            <div class="blk" data-1000-top="opacity:0; zoom:0;" data-500-top="opacity:1;">
+
+            <div id="postouterwrapper" style="width: 500px;">
+                <img src="res/dude.png" style="height: 100%; width: 100%; object-fit: contain">
             </div>
-            <div class="blk" data-1000-top="opacity:0; zoom:0;" data-500-top="opacity:1;">
-            </div>
-            <div class="blk" data-1000-top="opacity:0; zoom:0;" data-500-top="opacity:1;">
-            </div>
-            <div class="blk" >
-            </div>
-            <div class="blk">
-            </div>
-            <div class="blk">
-            </div>
-            <div class="blk">
-            </div>
-            <div class="blk">
-            </div>
-            <div class="blk">
-            </div>
-            <div class="blk">
-            </div>
-            <div class="blk">
-            </div>
-            <div class="blk">
-            </div>
-            <div class="blk">
-            </div>
+
         </div>
     </div>
     <div id="menu_container">
         <div style="height: 2px; width: 100%; background-color: black;"></div>
         <div id="menubar">
-            <div id="oslogo">
+            <div class="oslogo">
                 <img class="bottom" src="res/dull_os_button_inverted.png" style="margin-left: 0.3em">
                 <img class="top" src="res/dull_os_button.png" style="margin-left: 0.3em">
+            </div>
+            <div class="oslogo" style="position: fixed; left: 116px">
+                <img class="bottom" src="res/dull_ama_inverted.png">
+                <img class="top" src="res/dull_ama.png">
+            </div>
+            <div class="oslogo" style="position: fixed; left: 193px">
+                <img class="bottom" src="res/dull_archive_inverted.png">
+                <img class="top" src="res/dull_archive.png">
+            </div>
+            <div class="oslogo" style="position: fixed; left: 270px">
+                <img class="bottom" src="res/dull_youtube_inverted.png">
+                <img class="top" src="res/dull_youtube.png">
             </div>
         </div>
     </div>
