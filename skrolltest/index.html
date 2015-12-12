@@ -58,14 +58,18 @@
     <script src="../scripts/jquery-2.1.4.min.js"></script>
     <script src="../scripts/velocity.min.js"></script>
     <script>
-        //GLOBAL VARS
-        $mousePos = {x: -1, y: -1};
 
+        // Walkingboy Class Begin
         function Walkingboy(imgsrc) {
-            this.posX = 0;
-            this.posY = 0;
+            this._x = 0;
+            this._y = 0;
             this.mouseX = 0;
             this.mouseY = 0;
+            this.oldX = 0;
+            this.oldY = 0;
+            this.maxVelocity = 50;
+            this._sc = 152;
+            this.img_src = imgsrc;
 
             this.$outerDiv = $('<div></div>')
                     .css({
@@ -75,6 +79,7 @@
                         'width': '100%'
                     });
             this.$walkboy = $('<img>')
+                    .attr({id: '_walkboy'})
                     .attr({src: imgsrc.stand});
 
             this.$outerDiv.append(this.$walkboy);
@@ -85,20 +90,125 @@
             $('body').append(this.$outerDiv);
         };
 
+        Walkingboy.prototype.getPos = function (el) {
+            var _x = 0;
+            var _y = 0;
+
+            while (el && !isNaN(el.offsetLeft) && !isNan(el.offsetTop)) {
+                _x += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+                _y += (el.offsetTop - el.scrollTop + el.clientTop);
+                el = el.offsetParent();
+            }
+
+            console.log({left: _x, top: _y});
+        };
+
+        Walkingboy.prototype.scopeTest = function() {
+            console.log("scopeTest executed");
+            var _s = this;
+
+            //inner
+            function _fna(_ctx) {
+                var _s = _ctx;
+                console.log(_s._sc);
+            }
+            //outer
+            setInterval(function() {
+                        _fna(_s)
+                    }
+                    , 500);
+        };
+
         Walkingboy.prototype.run = function() {
+            // utility functions
+            // capture this
+            var _t = this;
+
+            function getAbsDist(obj1, obj2) {
+                var _dx = abs(obj2.x - obj1.x);
+                var _dy = abs(obj2.y - obj1.y);
+                return Math.sqrt(Math.pow(_dx, 2) + Math.pow(_dy, 2));
+            }
 
             $(document).mousemove(function(e) {
-                this.mouseX = e.pageX;
-                this.mouseY = e.pageY;
+                _t.mouseX = e.pageX;
+                _t.mouseY = e.pageY;
             });
 
-            var $loop = setInterval(function() {
-                this.posX = ((this.mouseX - this.posX)/12);
-                this.$walkboy.css({
-                    left:$this.posX + 'px'
-                });
-            }, 30);
+            var mit = 0;
+            var staytime = 0;
+
+            // inner function
+            function _a (_ctx, _mit, _staytime) {
+                var _t = _ctx;
+                var mit = _mit;
+                var staytime = _staytime;
+                // calculate velocity based on mouseY
+
+
+                if (Math.abs(_t._x - _t.mouseX) <= 20) {
+                    _t.$walkboy.attr({
+                        src: _t.img_src.stand
+                    });
+
+                    staytime += 1000;
+                    console.log(staytime);
+                    if (staytime >= 3000) {
+                        var _src = _t.$walkboy.attr("src");
+                        if (_src == _t.img_src.sit) {
+                            // do nothing
+                        } else {
+                            _t.$walkboy.attr({
+                                src: _t.img_src.sit
+                            });
+                        }
+                    }
+
+                } else {
+                    staytime = 0;
+                    console.log(staytime);
+                    if (Math.abs(_t._x - _t.mouseX)/(_t.maxVelocity/1000.0) >= _t.maxVelocity) {
+                        if ((_t.mouseX - _t._x) < 0.0) {
+                            _t._x += (-1.0) * _t.maxVelocity * 0.5;
+
+                            var _src = _t.$walkboy.attr("src");
+                            if (_src == _t.img_src.walk_flipped) {
+                                // do nothing
+                            } else {
+                                _t.$walkboy.attr({
+                                    src: _t.img_src.walk_flipped
+                                });
+                            }
+
+                        } else {
+                            _t._x += (1.0) * _t.maxVelocity * 0.5;
+
+                            var _src = _t.$walkboy.attr("src");
+                            if (_src == _t.img_src.walk) {
+                                //do nothing
+                            } else {
+                                _t.$walkboy.attr({
+                                    src: _t.img_src.walk
+                                });
+                            }
+                        }
+                    }
+
+                    _t.$outerDiv.animate({
+                        left: _t._x + 'px'
+                    }, 1000, "linear");
+                }
+
+                console.log(_t.$outerDiv.css("left"))
+            }
+
+            // execute inner function as callback curry
+            setInterval(function() {
+                _a(_t, mit, staytime);
+            }, 1000);
         };
+
+        //Walkingboy Class End
 
         $(function() {
             var s = skrollr.init();
@@ -106,17 +216,15 @@
             // initiate walking boy
             var $boystock = {
                 stand: 'res/bottombarguy_stand_resized.gif',
-                walk: 'res/bottobarguy_stand_walk_resized.gif'
+                walk: 'res/bottombarguy_stand_walk_resized.gif',
+                walk_flipped: 'res/bottombarguy_stand_walk_resized_flipped.gif',
+                sit: 'res/bottombarguy_stand_sit_resized.gif',
+                cursor_senpai: 'res/cursor_senpai.png'
             };
 
             var wb = new Walkingboy($boystock);
             wb.initialize();
             wb.run();
-
-            $(document).bind('mousemove', function(e){
-                $mousePos.x = e.pageX;
-                $mousePos.y = e.pageY;
-            });
         });
     </script>
 </head>
