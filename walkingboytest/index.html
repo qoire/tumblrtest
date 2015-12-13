@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script src="../scripts/jquery-2.1.4.min.js"></script>
+<script src="../scripts/walkingboy.js"></script>
+<script>
+    $(function() {
+
+        // initiate walking boy
+        var $boystock = {
+            stand: 'http://i.imgur.com/ReTvoNx.gif',
+            walk: 'http://i.imgur.com/1lzRCSB.gif',
+            walk_flipped: 'http://i.imgur.com/SKYHWsm.gif',
+            sit: 'http://i.imgur.com/RTvEz1f.gif',
+            bottom_offset: '0px',
+            left_offset: '0px'
+        };
+
+        var wb = new Walkingboy($boystock);
+        wb.initialize();
+        wb.run();
+    });
+</script>
+</body>
+</html>

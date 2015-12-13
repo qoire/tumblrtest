@@ -59,12 +59,14 @@
             this._sc = 152;
             this.mouseCT = 0;
             this.img_src = imgsrc;
+            this.bottom_offset = imgsrc.bottom_offset;
+            this.left_offset = imgsrc.left_offset;
 
             this.$outerDiv = $('<div></div>')
                     .css({
                         'position': 'fixed',
-                        'bottom': '21px',
-                        'left': '0px',
+                        'bottom': this.bottom_offset,
+                        'left': this.left_offset,
                         'width': '100%'
                     });
             this.$walkboy = $('<img>')
@@ -203,11 +205,12 @@
 
             // initiate walking boy
             var $boystock = {
-                stand: 'http://49.media.tumblr.com/6a51017177d46114fdd44b537269b148/tumblr_nz8350lS0K1r1rb5io4_100.gif',
-                walk: 'http://45.media.tumblr.com/d92da74606230e30463fa1c17801391b/tumblr_nz8350lS0K1r1rb5io2_100.gif',
-                walk_flipped: 'http://49.media.tumblr.com/bde2be279e304359ac9dbe131cf96b32/tumblr_nz8350lS0K1r1rb5io3_100.gif',
-                sit: 'http://45.media.tumblr.com/15586dc556245498111efeea70d7f77b/tumblr_nz8350lS0K1r1rb5io1_100.gif',
-                cursor_senpai: 'res/cursor_senpai.png'
+                stand: 'http://i.imgur.com/ReTvoNx.gif',
+                walk: 'http://i.imgur.com/1lzRCSB.gif',
+                walk_flipped: 'http://i.imgur.com/SKYHWsm.gif',
+                sit: 'http://i.imgur.com/RTvEz1f.gif',
+                bottom_offset: '21px',
+                left_offset: '0px'
             };
 
             var wb = new Walkingboy($boystock);
